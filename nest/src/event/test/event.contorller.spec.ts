@@ -6,7 +6,7 @@ import { AppModule } from '../../app.module';
 describe('EventController (e2e)', () => {
   let app: INestApplication;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -41,5 +41,110 @@ describe('EventController (e2e)', () => {
         },
       })
       .expect(201);
+  });
+
+  it('/event/:id (DELETE)', async () => {
+    // Create a new event
+    const res = await request(app.getHttpServer())
+      .post('/event')
+      .send({
+        title: 'Test2 Event',
+        description: 'Test2 event description',
+        price: 300,
+        date: new Date(),
+        startTime: new Date(),
+        endTime: new Date(),
+        maxOccupancy: 100,
+        minOccupancy: 1,
+        location: {
+          type: 'Point',
+          coordinates: [40.748817, -73.985428],
+        },
+        host: {
+          id: 'hostId1',
+          name: 'Test Host',
+        },
+      })
+      .expect(201);
+
+    return request(app.getHttpServer())
+      .delete(`/event/${res.body._id}`)
+      .expect(200);
+  });
+
+  it('/event/:id (PUT)', async () => {
+    // Create a new event
+    const res = await request(app.getHttpServer())
+      .post('/event')
+      .send({
+        title: 'Test2 Event',
+        description: 'Test2 event description',
+        price: 300,
+        date: new Date(),
+        startTime: new Date(),
+        endTime: new Date(),
+        maxOccupancy: 100,
+        minOccupancy: 1,
+        location: {
+          type: 'Point',
+          coordinates: [40.748817, -73.985428],
+        },
+        host: {
+          id: 'hostId1',
+          name: 'Test Host',
+        },
+      })
+      .expect(201);
+
+    return request(app.getHttpServer())
+      .put(`/event/${res.body._id}`)
+      .send({
+        title: 'Updated Test Event',
+      })
+      .expect(200)
+      .then((response) => {
+        expect(response.body.title).toEqual('Updated Test Event');
+      });
+  });
+
+  describe('/event/:id (GET)', () => {
+    it('should get an event by id', async () => {
+      // Create a new event
+      const res = await request(app.getHttpServer())
+        .post('/event')
+        .send({
+          title: 'Test2 Event',
+          description: 'Test2 event description',
+          price: 300,
+          date: new Date(),
+          startTime: new Date(),
+          endTime: new Date(),
+          maxOccupancy: 100,
+          minOccupancy: 1,
+          location: {
+            type: 'Point',
+            coordinates: [40.748817, -73.985428],
+          },
+          host: {
+            id: 'hostId1',
+            name: 'Test Host',
+          },
+        })
+        .expect(201);
+
+      return request(app.getHttpServer())
+        .get(`/event/${res.body._id}`)
+        .expect(200)
+        .then((response) => {
+          expect(response.body._id).toBeDefined();
+          expect(response.body.title).toBeDefined();
+        });
+    });
+
+    it('should return 404 for non-existing event', () => {
+      return request(app.getHttpServer())
+        .get(`/event/nonExistingId`)
+        .expect(404);
+    });
   });
 });
