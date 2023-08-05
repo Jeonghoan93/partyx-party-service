@@ -19,9 +19,9 @@ describe('EventController (e2e)', () => {
     await app.close();
   });
 
-  it('/event (POST)', () => {
+  it('/api/event (POST)', () => {
     return request(app.getHttpServer())
-      .post('/event')
+      .post('/api/event')
       .send({
         title: 'Test Event',
         description: 'Test event description',
@@ -43,10 +43,10 @@ describe('EventController (e2e)', () => {
       .expect(201);
   });
 
-  it('/event/:id (DELETE)', async () => {
+  it('/api/event/:id (DELETE)', async () => {
     // Create a new event
     const res = await request(app.getHttpServer())
-      .post('/event')
+      .post('/api/event')
       .send({
         title: 'Test2 Event',
         description: 'Test2 event description',
@@ -68,14 +68,14 @@ describe('EventController (e2e)', () => {
       .expect(201);
 
     return request(app.getHttpServer())
-      .delete(`/event/${res.body._id}`)
+      .delete(`/api/event/${res.body._id}`)
       .expect(200);
   });
 
-  it('/event/:id (PUT)', async () => {
+  it('/api/event/:id (PUT)', async () => {
     // Create a new event
     const res = await request(app.getHttpServer())
-      .post('/event')
+      .post('/api/event')
       .send({
         title: 'Test2 Event',
         description: 'Test2 event description',
@@ -97,7 +97,7 @@ describe('EventController (e2e)', () => {
       .expect(201);
 
     return request(app.getHttpServer())
-      .put(`/event/${res.body._id}`)
+      .put(`/api/event/${res.body._id}`)
       .send({
         title: 'Updated Test Event',
       })
@@ -107,11 +107,11 @@ describe('EventController (e2e)', () => {
       });
   });
 
-  describe('/event/:id (GET)', () => {
+  describe('/api/event/:id (GET)', () => {
     it('should get an event by id', async () => {
       // Create a new event
       const res = await request(app.getHttpServer())
-        .post('/event')
+        .post('/api/event')
         .send({
           title: 'Test2 Event',
           description: 'Test2 event description',
@@ -133,7 +133,7 @@ describe('EventController (e2e)', () => {
         .expect(201);
 
       return request(app.getHttpServer())
-        .get(`/event/${res.body._id}`)
+        .get(`/api/event/${res.body._id}`)
         .expect(200)
         .then((response) => {
           expect(response.body._id).toBeDefined();
@@ -143,7 +143,7 @@ describe('EventController (e2e)', () => {
 
     it('should return 404 for non-existing event', () => {
       return request(app.getHttpServer())
-        .get(`/event/nonExistingId`)
+        .get(`/api/event/nonExistingId`)
         .expect(404);
     });
   });

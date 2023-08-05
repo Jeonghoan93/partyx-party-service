@@ -12,6 +12,11 @@ export const EventSchema = new mongoose.Schema({
   location: {
     type: { type: String, default: 'Point', required: true },
     coordinates: { type: [Number], required: true },
+    city: { type: String, required: false },
+    state: { type: String, required: false },
+    zipCode: { type: String, required: false },
+    streetAddress: { type: String, required: false },
+    country: { type: String, required: false },
   },
   host: {
     id: { type: String, required: true },

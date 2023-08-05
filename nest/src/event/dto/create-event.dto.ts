@@ -10,6 +10,11 @@ export class CreateEventDto {
   readonly location: {
     type: 'Point';
     coordinates: [number, number];
+    city: string;
+    state: string;
+    zipCode: string;
+    streetAddress: string;
+    country: string;
   };
   readonly host: {
     id: string;

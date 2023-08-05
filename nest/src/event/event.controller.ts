@@ -14,7 +14,7 @@ import { UpdateEventDto } from './dto/update-event.dto';
 import { EventService } from './event.service';
 import { Event } from './interfaces/event.interface';
 
-@Controller('event')
+@Controller('api/event')
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 

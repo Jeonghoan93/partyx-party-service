@@ -19,7 +19,7 @@ export class UpdateEventDto {
 
   @IsOptional()
   @IsString()
-  location?: string;
+  location?: object;
 
   @IsOptional()
   @IsString()
