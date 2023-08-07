@@ -2,7 +2,7 @@ import { Controller, Get, Param } from '@nestjs/common';
 import { User } from './interfaces/user.interface';
 import { UserService } from './user.service';
 
-@Controller('users')
+@Controller('api/user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

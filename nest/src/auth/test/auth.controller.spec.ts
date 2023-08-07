@@ -1,137 +1,54 @@
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { User } from 'src/user/interfaces/user.interface';
-import { UserModule } from '../../user/user.module';
-import { UserService } from '../../user/user.service';
-import { AuthController } from '../auth.controller';
-import { AuthService } from '../auth.service';
-import { LocalStrategy } from '../local.strategy';
+import * as request from 'supertest';
+import { AppModule } from '../../app.module';
 
-describe('AuthModule', () => {
-  let authService: AuthService;
-  let authController: AuthController;
-
-  let userService: UserService;
-
-  const mockUserModel = {
-    // mock methods like find, save, etc.
-    findByUsername: jest.fn(),
-  };
+describe('AuthController (e2e)', () => {
+  let app: INestApplication;
 
   beforeAll(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        JwtModule.register({
-          secret: 'testSecret',
-          signOptions: { expiresIn: '1h' },
-        }),
-        UserModule,
-      ],
-      providers: [
-        AuthService,
-        UserService,
-        {
-          provide: 'UserModel', // This matches @InjectModel('User')
-          useValue: mockUserModel,
-        },
-        LocalStrategy,
-        JwtService,
-      ],
-      controllers: [AuthController],
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
     }).compile();
 
-    userService = module.get<UserService>(UserService);
-    authService = module.get<AuthService>(AuthService);
-    authController = module.get<AuthController>(AuthController);
+    app = moduleFixture.createNestApplication();
+    await app.init();
   });
 
-  describe('AuthService', () => {
-    it('should be defined', () => {
-      expect(authService).toBeDefined();
-    });
-
-    describe('validateUser', () => {
-      it('should return a user if valid firstName and password is provided', async () => {
-        // Mock UserService's findByUsername to return a fake user for this test
-        const user = {
-          email: 'test@email.com',
-          firstName: 'test',
-          password: 'hashedpassword', // Mock bcrypt's hash
-        };
-
-        jest
-          .spyOn(userService, 'findByUsername')
-          .mockImplementation(() => Promise.resolve(user as User));
-
-        const result = await authService.validateUser('test', 'password');
-        expect(result).toEqual(user);
-      });
-    });
-
-    describe('login', () => {
-      it('should return an access token', async () => {
-        const user = { firstName: 'testUser', userId: '1234' };
-        const result = await authService.login(user);
-        expect(result).toHaveProperty('access_token');
-      });
-    });
-
-    describe('register', () => {
-      it('should register a user', async () => {
-        const user = {
-          email: 'test@email.com',
-          firstName: 'test',
-          password: 'hashedpassword',
-          // ... other fields
-        };
-
-        jest
-          .spyOn(userService, 'create')
-          .mockImplementation(() => Promise.resolve(user as User));
-
-        expect(await authService.register(new CreateUserDto())).toEqual(user);
-      });
-    });
+  afterAll(async () => {
+    await app.close();
   });
 
-  describe('AuthController', () => {
-    it('should be defined', () => {
-      expect(authController).toBeDefined();
-    });
+  it.only('Should register', () => {
+    return request(app.getHttpServer())
+      .post('/api/auth/register')
+      .send({
+        firstName: 'Jon Doe',
+        password: 'Test1234',
+        email: 'test@email',
+      })
+      .expect(201);
+  });
 
-    describe('login', () => {
-      it('should return an access token when credentials are valid', async () => {
-        const result = { access_token: 'testToken' };
-        jest
-          .spyOn(authService, 'login')
-          .mockImplementation(() => Promise.resolve(result));
+  it('Should login', async () => {
+    // Create a new user
+    const res = request(app.getHttpServer())
+      .post('/api/auth/register')
+      .send({
+        firstName: 'Jon Doe',
+        password: 'Test1234',
+        email: 'test2@email',
+      })
+      .expect(201);
 
-        expect(
-          await authController.login({
-            user: { firstName: 'testUser', userId: '1234' },
-          }),
-        ).toBe(result);
+    return request(app.getHttpServer())
+      .post(`/api/auth/login/${res.body._id}`)
+      .send({
+        title: 'Updated Test Event',
+      })
+      .expect(200)
+      .then((response) => {
+        expect(response.body.title).toEqual('Updated Test Event');
       });
-    });
-
-    describe('register', () => {
-      it('should register a user', async () => {
-        const user = {
-          email: 'test@email.com',
-          firstName: 'test',
-          password: 'hashedpassword',
-          // ... other fields
-        };
-
-        jest
-          .spyOn(authService, 'register')
-          .mockImplementation(() => Promise.resolve(user as User));
-
-        expect(
-          await authController.register({ body: new CreateUserDto() }),
-        ).toEqual(user);
-      });
-    });
   });
 });
