@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AuthModule } from './auth/auth.module';
-import { EmailNotificationModule } from './email-notification/email-notification.module';
-import { EventModule } from './event/event.module';
-import { PaymentModule } from './payment/payment.module';
-import { SearchModule } from './search/search.module';
-import { StripeModule } from './stripe/stripe.module';
-import { UserModule } from './user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { BookingModule } from './modules/booking/booking.module';
+import { EmailNotificationModule } from './modules/email-notification/email-notification.module';
+import { EventModule } from './modules/event/event.module';
+import { PaymentModule } from './modules/payment/payment.module';
+import { SearchModule } from './modules/search/search.module';
+import { StripeModule } from './modules/stripe/stripe.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { UserModule } from './user/user.module';
     UserModule,
     PaymentModule,
     EmailNotificationModule,
+    BookingModule,
   ],
 })
 export class AppModule {}
