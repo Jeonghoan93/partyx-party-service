@@ -7,6 +7,7 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import { User } from 'src/common/interfaces/user.interface';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/login.dto';
 import { RegisterUserDto } from './dto/register.dto';
@@ -34,8 +35,8 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('current-user')
-  async getCurrentUSer(@Request() req) {
-    return this.authService.getCurrentUser(req.user.userId);
+  async getCurrentUSer(@Request() user: User) {
+    return this.authService.getCurrentUser(user.email);
   }
 
   // Add registration, password reset, etc. as needed.

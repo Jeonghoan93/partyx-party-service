@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
@@ -10,7 +10,14 @@ export class UserService {
   constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    let hashedPassword;
+
+    try {
+      hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    } catch (err) {
+      throw new InternalServerErrorException('Error hashing password.');
+    }
+
     const createdUser = new this.userModel({
       ...createUserDto,
       password: hashedPassword,

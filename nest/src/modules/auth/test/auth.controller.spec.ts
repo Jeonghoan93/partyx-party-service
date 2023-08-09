@@ -42,9 +42,10 @@ describe('AuthController (e2e)', () => {
       .expect(201);
 
     return await request(app.getHttpServer())
-      .post(`/api/auth/login/${res.body._id}`)
+      .post('/api/auth/login')
       .send({
-        title: 'Updated Test Event',
+        email: res.body.email,
+        password: res.body.password,
       })
       .expect(200)
       .then((response) => {
