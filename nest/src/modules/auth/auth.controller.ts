@@ -10,7 +10,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { User } from 'src/common/interfaces/user.interface';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/login.dto';
 import { RegisterUserDto } from './dto/register.dto';
@@ -28,7 +27,6 @@ export class AuthController {
     if (!user) {
       throw new UnauthorizedException('Invalid credentials.');
     }
-
     const result = this.authService.login(user);
     return res.status(HttpStatus.OK).send(result);
   }
@@ -40,8 +38,8 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('current-user')
-  async getCurrentUSer(@Request() user: User) {
-    return this.authService.getCurrentUser(user.email);
+  async getCurrentUSer(@Request() req) {
+    return this.authService.getCurrentUser(req.user.email);
   }
 
   // Add registration, password reset, etc. as needed.

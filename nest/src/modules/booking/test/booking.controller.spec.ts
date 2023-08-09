@@ -40,8 +40,6 @@ describe('BookingController', () => {
 
       //... Other assertions
 
-      console.log('createdBooking', createdBooking);
-
       const bookings = await bookingController.findAll();
       expect(bookings[0].user).toEqual(testBookingDto.user);
       //... Other assertions

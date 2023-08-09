@@ -29,10 +29,6 @@ describe('AuthController (e2e)', () => {
         email: 'test222@email',
       });
 
-    if (res.status === 400) {
-      console.error('res.body: ', res.body);
-    }
-
     expect(res.status).toEqual(201);
   });
 
@@ -57,14 +53,15 @@ describe('AuthController (e2e)', () => {
       .expect(200);
   });
 
-  it('Should get current user', async () => {
+  it.only('Should get current user', async () => {
     // Create a new user
     const resRegister = await request(app.getHttpServer())
       .post('/api/auth/register')
       .send({
         firstName: 'Jon Doe',
         password: 'Test1234',
-        email: 'test3@email',
+        confirmPassword: 'Test1234',
+        email: 'test34@email',
       })
       .expect(201);
 
@@ -73,11 +70,15 @@ describe('AuthController (e2e)', () => {
       .post('/api/auth/login')
       .send({
         email: resRegister.body.email,
-        password: resRegister.body.password,
+        password: 'Test1234',
       })
       .expect(200);
 
+    console.log('resLogin', resLogin.body);
+
     const jwt = resLogin.body.access_token;
+
+    console.log('jwt', jwt);
 
     // use the JWT to get the current user
     return await request(app.getHttpServer())
