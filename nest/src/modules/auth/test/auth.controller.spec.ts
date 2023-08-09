@@ -20,14 +20,20 @@ describe('AuthController (e2e)', () => {
   });
 
   it('Should register', async () => {
-    return await request(app.getHttpServer())
+    const res = await request(app.getHttpServer())
       .post('/api/auth/register')
       .send({
         firstName: 'Jon Doe',
         password: 'Test1234',
-        email: 'test@email',
-      })
-      .expect(201);
+        confirmPassword: 'Test1234',
+        email: 'test222@email',
+      });
+
+    if (res.status === 400) {
+      console.error('res.body: ', res.body);
+    }
+
+    expect(res.status).toEqual(201);
   });
 
   it('Should login', async () => {
@@ -37,7 +43,8 @@ describe('AuthController (e2e)', () => {
       .send({
         firstName: 'Jon Doe',
         password: 'Test1234',
-        email: 'test2@email',
+        confirmPassword: 'Test1234',
+        email: 'test54@email',
       })
       .expect(201);
 
@@ -45,12 +52,9 @@ describe('AuthController (e2e)', () => {
       .post('/api/auth/login')
       .send({
         email: res.body.email,
-        password: res.body.password,
+        password: 'Test1234',
       })
-      .expect(200)
-      .then((response) => {
-        expect(response.body.title).toEqual('Updated Test Event');
-      });
+      .expect(200);
   });
 
   it('Should get current user', async () => {
