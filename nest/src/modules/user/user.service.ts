@@ -52,5 +52,8 @@ export class UserService {
     return this.userModel.findById(userId).exec();
   }
 
+  async deleteUserByEmail(email: string): Promise<void> {
+    await this.userModel.deleteOne({ email }).exec();
+  }
   // Add other CRUD methods as needed...
 }

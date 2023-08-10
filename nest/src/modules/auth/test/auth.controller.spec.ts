@@ -19,6 +19,12 @@ describe('AuthController (e2e)', () => {
     await app.close();
   });
 
+  beforeEach(async () => {
+    await request(app.getHttpServer())
+      .delete(`/api/user/test@email.com`)
+      .expect(200);
+  });
+
   it('Should register', async () => {
     const res = await request(app.getHttpServer())
       .post('/api/auth/register')
@@ -26,7 +32,7 @@ describe('AuthController (e2e)', () => {
         firstName: 'Jon Doe',
         password: 'Test1234',
         confirmPassword: 'Test1234',
-        email: 'test222@email',
+        email: 'test@email.com',
       });
 
     expect(res.status).toEqual(201);
@@ -40,7 +46,7 @@ describe('AuthController (e2e)', () => {
         firstName: 'Jon Doe',
         password: 'Test1234',
         confirmPassword: 'Test1234',
-        email: 'test54@email',
+        email: 'test@email.com',
       })
       .expect(201);
 
@@ -50,10 +56,10 @@ describe('AuthController (e2e)', () => {
         email: res.body.email,
         password: 'Test1234',
       })
-      .expect(200);
+      .expect(201);
   });
 
-  it.only('Should get current user', async () => {
+  it('Should get current user', async () => {
     // Create a new user
     const resRegister = await request(app.getHttpServer())
       .post('/api/auth/register')
@@ -61,7 +67,7 @@ describe('AuthController (e2e)', () => {
         firstName: 'Jon Doe',
         password: 'Test1234',
         confirmPassword: 'Test1234',
-        email: 'test34@email',
+        email: 'test@email.com',
       })
       .expect(201);
 
@@ -72,13 +78,9 @@ describe('AuthController (e2e)', () => {
         email: resRegister.body.email,
         password: 'Test1234',
       })
-      .expect(200);
-
-    console.log('resLogin', resLogin.body);
+      .expect(201);
 
     const jwt = resLogin.body.access_token;
-
-    console.log('jwt', jwt);
 
     // use the JWT to get the current user
     return await request(app.getHttpServer())

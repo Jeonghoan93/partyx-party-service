@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { User } from 'src/common/interfaces/user.interface';
@@ -13,23 +17,28 @@ export class AuthService {
     private userService: UserService,
   ) {}
 
-  async validateUser({ email, password }: LoginUserDto): Promise<any> {
-    const user = await this.userService.findByEmail(email);
-    if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
+  async validateUser(dto: LoginUserDto): Promise<User | null> {
+    // checking the credentials of the user.
+    const user = await this.userService.findByEmail(dto.email);
 
-    const isPasswordMatching = await bcrypt.compare(password, user.password);
+    if (!user) return null;
+
+    const isPasswordMatching = await bcrypt.compare(
+      dto.password,
+      user.password,
+    );
+
     if (!isPasswordMatching) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new BadRequestException('Invalid credentials');
     }
 
-    const { password: _, ...result } = user;
-
-    return result;
+    return user;
   }
 
-  async login(user: User) {
+  async login(dto: LoginUserDto) {
+    // creating the JWT once the user's credentials have been validated.
+    const user = await this.validateUser(dto);
+
     const payload = { email: user.email, sub: user._id };
     return {
       access_token: this.jwtService.sign(payload),

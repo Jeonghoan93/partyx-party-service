@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Req,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -13,6 +14,13 @@ import { Event } from '../../common/interfaces/event.interface';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { EventService } from './event.service';
+
+interface RequestWithUser extends Request {
+  user: {
+    _id: string;
+    // ... other properties of the user payload
+  };
+}
 
 @Controller('api/event')
 export class EventController {
@@ -30,8 +38,13 @@ export class EventController {
   }
 
   @Post()
-  async create(@Body() createEventDto: CreateEventDto): Promise<Event> {
-    return this.eventService.create(createEventDto);
+  async create(
+    @Req() req: RequestWithUser,
+    @Body() createEventDto: CreateEventDto,
+  ): Promise<Event> {
+    // This is a common way to get userId from a request if you're using an authentication middleware like passport.
+    const userId = req.user['_id'];
+    return this.eventService.create(userId, createEventDto);
   }
 
   @Put(':id')

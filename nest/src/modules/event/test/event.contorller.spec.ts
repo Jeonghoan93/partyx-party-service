@@ -5,6 +5,7 @@ import { AppModule } from '../../../app.module';
 
 describe('EventController (e2e)', () => {
   let app: INestApplication;
+  let jwtToken: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -13,6 +14,28 @@ describe('EventController (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
+
+    // Register a new user
+    await request(app.getHttpServer())
+      .post('/api/auth/register')
+      .send({
+        firstName: 'Jimmy',
+        email: 'user@test.com',
+        password: 'password',
+        confirmPassword: 'password',
+      })
+      .expect(201);
+
+    // Login the user
+    const res = await request(app.getHttpServer())
+      .post('/api/auth/login')
+      .send({
+        email: 'user@test.com',
+        password: 'password',
+      })
+      .expect(200);
+
+    jwtToken = res.body.access_token;
   });
 
   afterAll(async () => {
@@ -22,6 +45,7 @@ describe('EventController (e2e)', () => {
   it('/api/event (POST)', () => {
     return request(app.getHttpServer())
       .post('/api/event')
+      .set('Authorization', `Bearer ${jwtToken}`)
       .send({
         title: 'Test Event',
         description: 'Test event description',

@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Delete, Get, Param } from '@nestjs/common';
 import { User } from '../../common/interfaces/user.interface';
 import { UserService } from './user.service';
 
@@ -11,5 +11,10 @@ export class UserController {
     return this.userService.findByUsername(username);
   }
 
+  @Delete(':email')
+  async deleteUserByEmail(@Param('email') email: string) {
+    await this.userService.deleteUserByEmail(email);
+    return { message: 'User deleted successfully.' };
+  }
   // Add other routes for CRUD operations as needed...
 }
