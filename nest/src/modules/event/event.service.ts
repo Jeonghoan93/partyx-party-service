@@ -18,7 +18,7 @@ export class EventService {
     //  return await this.eventModel.find().populate('host').exec();
   }
 
-  async getById(id: string): Promise<Event> {
+  async findEventById(id: string): Promise<Event> {
     if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException(`Event with id ${id} not found`);
     }
@@ -32,26 +32,12 @@ export class EventService {
     return event;
   }
 
-  async create(userId: string, createEventDto: CreateEventDto): Promise<Event> {
-    if (!Types.ObjectId.isValid(userId)) {
-      throw new NotFoundException(`User with id ${userId} not found`);
-    }
-
-    const user = await this.userModel.findById(userId);
-
-    if (!user) {
-      throw new NotFoundException(`User with id ${userId} not found`);
-    }
-
+  async create(dto: CreateEventDto): Promise<Event> {
     const createdEvent = new this.eventModel({
-      ...createEventDto,
-      host: userId,
+      ...dto,
     });
 
     const savedEvent = await createdEvent.save();
-
-    user.eventsHosted.push(savedEvent._id);
-    await user.save();
 
     return savedEvent;
   }

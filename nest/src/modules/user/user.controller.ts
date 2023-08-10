@@ -12,7 +12,7 @@ export class UserController {
   }
 
   @Get(':email')
-  async findByEmail(@Param('email') email: string): Promise<User> {
+  async findUserByEmail(@Param('email') email: string): Promise<User> {
     return this.userService.findByEmail(email);
   }
 

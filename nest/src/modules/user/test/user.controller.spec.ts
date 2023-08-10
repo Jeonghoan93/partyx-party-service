@@ -73,7 +73,7 @@ describe('UserController', () => {
     const result = await controller.create(user);
 
     // Find the user by email
-    const foundUser = await controller.findByEmail(result.email);
+    const foundUser = await controller.findUserByEmail(result.email);
 
     expect(foundUser).toBeDefined();
     expect(foundUser.firstName).toBe('Jimmy');
