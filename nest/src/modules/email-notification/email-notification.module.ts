@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { EmailNotificationController } from './email-notification.controller';
 import { EmailNotificationService } from './email-notification.service';
-import { EmailNotificationSchema } from './schemas/email-notification.schema';
+import { EmailNotificationSchema } from '../../common/schema/email-notification';
 
 @Module({
   imports: [

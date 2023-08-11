@@ -1,5 +1,5 @@
-import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { User } from '../../common/interfaces/user.interface';
+import { Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Users } from 'src/common/schema/users';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
 
@@ -7,13 +7,26 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @Post()
-  async create(dto: CreateUserDto): Promise<User> {
+  async create(dto: CreateUserDto): Promise<Users> {
     return this.userService.create(dto);
   }
 
+  @Get()
+  async findAll(): Promise<Users[]> {
+    return this.userService.findAll();
+  }
+
   @Get(':email')
-  async findUserByEmail(@Param('email') email: string): Promise<User> {
+  async findUserByEmail(@Param('email') email: string): Promise<Users> {
     return this.userService.findByEmail(email);
+  }
+
+  @Patch(':email')
+  async updateUserByEmail(
+    @Param('email') email: string,
+    @Param('password') password: string,
+  ): Promise<Users> {
+    return this.userService.updateUserByEmail(email, password);
   }
 
   @Delete(':email')

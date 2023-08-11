@@ -2,12 +2,15 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   Post,
   Request,
+  Res,
   UseGuards,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { AuthService } from './auth.service';
-import { LoginUserDto } from './dto/login.dto';
 import { RegisterUserDto } from './dto/register.dto';
 import { JwtAuthGuard } from './strategies/jwt-auth.guard';
 import { LocalAuthGuard } from './strategies/local-auth.guard';
@@ -18,8 +21,23 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Body() dto: LoginUserDto) {
-    return this.authService.login(dto);
+  @HttpCode(HttpStatus.OK)
+  async login(
+    @Body() loginUser: { email: string; password: string },
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const loginRes = await this.authService.login(
+      loginUser.email,
+      loginUser.password,
+    );
+    if (loginRes.success) {
+      res.cookie('_digi_auth_token', loginRes.result?.token, {
+        httpOnly: true,
+      });
+    }
+    delete loginRes.result?.token;
+
+    return loginRes;
   }
 
   @Post('register')

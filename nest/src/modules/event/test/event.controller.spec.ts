@@ -3,26 +3,17 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppConfig } from 'src/config/app.config';
-import { AuthController } from 'src/modules/auth/auth.controller';
-import { AuthModule } from 'src/modules/auth/auth.module';
-import { UserController } from 'src/modules/user/user.controller';
-import { UserModule } from 'src/modules/user/user.module';
 import { CreateEventDto } from '../dto/create-event.dto';
 import { EventController } from '../event.controller';
 import { EventModule } from '../event.module';
-
 describe('UserController', () => {
   let app: INestApplication;
 
-  let userController: UserController;
-  let authController: AuthController;
   let eventController: EventController;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
-        UserModule,
-        AuthModule,
         EventModule,
         ConfigModule.forRoot({
           load: [AppConfig],
@@ -36,39 +27,13 @@ describe('UserController', () => {
           inject: [ConfigService],
         }),
       ],
-
-      controllers: [UserController, AuthController, EventController],
+      controllers: [EventController],
     }).compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
 
     eventController = moduleFixture.get<EventController>(EventController);
-    authController = moduleFixture.get<AuthController>(AuthController);
-    userController = moduleFixture.get<UserController>(UserController);
-
-    // delete the user if it exists
-    const userExists = await userController.findUserByEmail('user@test.com');
-
-    if (userExists) {
-      await userController.deleteUserByEmail('user@test.com');
-    }
-
-    // Register a new user
-    await authController.register({
-      firstName: 'Jimmy',
-      email: 'user@test.com',
-      password: 'password',
-      confirmPassword: 'password',
-    });
-
-    // Login the user
-    const user = await authController.login({
-      email: 'user@test.com',
-      password: 'password',
-    });
-
-    const jwtToken = user.access_token;
   });
 
   afterAll(async () => {

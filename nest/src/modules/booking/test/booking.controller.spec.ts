@@ -2,10 +2,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Types } from 'mongoose';
 import { AppModule } from 'src/app.module';
+import { BookingSchema } from '../../../common/schema/booking';
 import { BookingController } from '../booking.controller';
 import { BookingService } from '../booking.service';
 import { CreateBookingDto } from '../dto/create-booking.dto';
-import { BookingSchema } from '../schemas/booking.schema';
 
 describe('BookingController', () => {
   let bookingController: BookingController;

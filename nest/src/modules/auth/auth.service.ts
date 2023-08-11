@@ -5,7 +5,8 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { User } from 'src/common/interfaces/user.interface';
+import { Users } from 'src/common/schema/users';
+import { comparePassword } from 'src/common/util/password-manager';
 import { UserService } from 'src/modules/user/user.service';
 import { LoginUserDto } from './dto/login.dto';
 import { RegisterUserDto } from './dto/register.dto';
@@ -17,7 +18,7 @@ export class AuthService {
     private userService: UserService,
   ) {}
 
-  async validateUser(dto: LoginUserDto): Promise<User | null> {
+  async validateUser(dto: LoginUserDto): Promise<Users | null> {
     // checking the credentials of the user.
     const user = await this.userService.findByEmail(dto.email);
 
@@ -35,17 +36,48 @@ export class AuthService {
     return user;
   }
 
-  async login(dto: LoginUserDto) {
-    // creating the JWT once the user's credentials have been validated.
-    const user = await this.validateUser(dto);
+  async login(email: string, password: string): Promise<any> {
+    try {
+      const userExists = await this.userService.findByEmail(email);
 
-    const payload = { email: user.email, sub: user._id };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+      if (!userExists) {
+        throw new BadRequestException('User not found');
+      }
+
+      // if (!userExists.isVerified) {
+      //   throw new BadRequestException('Please verify your email');
+      // }
+
+      const isPasswordMatching = await comparePassword(
+        password,
+        userExists.password,
+      );
+
+      if (!isPasswordMatching) {
+        throw new BadRequestException('Invalid credentials');
+      }
+
+      const token = await userExists._id;
+
+      return {
+        success: true,
+        message: 'Login successful',
+        result: {
+          user: {
+            email: userExists.email,
+            firstName: userExists.firstName,
+            type: userExists.type,
+            id: userExists._id.toString(),
+          },
+          token,
+        },
+      };
+    } catch (err) {
+      throw new Error(err);
+    }
   }
 
-  async register(dto: RegisterUserDto): Promise<User> {
+  async register(dto: RegisterUserDto): Promise<Users> {
     if (dto.password !== dto.confirmPassword) {
       throw new UnauthorizedException('Passwords do not match');
     }
@@ -53,7 +85,7 @@ export class AuthService {
     return this.userService.create(dto);
   }
 
-  async getCurrentUser(email: string): Promise<User> {
+  async getCurrentUser(email: string): Promise<Users> {
     return this.userService.findByEmail(email);
   }
 }

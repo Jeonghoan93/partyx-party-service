@@ -9,7 +9,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { Event } from '../../common/interfaces/event.interface';
+import { Event } from 'src/common/schema/event';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { EventService } from './event.service';
