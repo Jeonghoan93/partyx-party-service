@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Users } from 'src/common/schema/users';
 import { comparePassword } from 'src/common/util/password-manager';
+import { generateAuthToken } from 'src/common/util/token-generator';
 import { UserService } from 'src/modules/user/user.service';
 import { LoginUserDto } from './dto/login.dto';
 import { RegisterUserDto } from './dto/register.dto';
@@ -57,7 +58,7 @@ export class AuthService {
         throw new BadRequestException('Invalid credentials');
       }
 
-      const token = await userExists._id;
+      const token = await generateAuthToken(userExists._id);
 
       return {
         success: true,

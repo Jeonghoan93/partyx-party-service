@@ -1,11 +1,6 @@
-import {
-  Inject,
-  Injectable
-} from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+import { Inject, Injectable } from '@nestjs/common';
 import { UserRepository } from 'src/common/repositories/user.repository';
-import { Users, userTypes } from 'src/common/schema/users';
-import { sendEmail } from 'src/common/util/mail-handler';
+import { UserTypes, Users } from 'src/common/schema/users';
 import { generatedHashPassword } from 'src/common/util/password-manager';
 import { CreateUserDto } from './dto/create-user.dto';
 
@@ -14,25 +9,25 @@ export class UserService {
   constructor(
     @Inject(UserRepository) private readonly userDB: UserRepository,
   ) {}
- 
+
   async findAll(): Promise<Users[]> {
-    return await this.userDB.find().exec();
+    return await this.userDB.find();
   }
 
-  async create(dto: CreateUserDto): Promise<any>  {
+  async create(dto: CreateUserDto): Promise<any> {
     try {
       // generate hashed password
       dto.password = await generatedHashPassword(dto.password);
 
       // check if admin
-      if (dto.type === userTypes.ADMIN) {
+      if (dto.type === UserTypes.ADMIN) {
         throw new Error('Now allow to create admin user');
       } else {
         dto.isVerified = true;
       }
 
       // user exists?
-      const user = await this.userDB.findOne({ email: dto.email })
+      const user = await this.userDB.findOne({ email: dto.email });
       if (user) {
         throw new Error('User already exists');
       }
@@ -50,44 +45,39 @@ export class UserService {
         otpExpiryTime,
       });
 
-      if (dto.type === userTypes.ADMIN) {
-        sendEmail(
-          dto.email,
-          'Welcome to the admin panel',
-          `Your OTP is ${otp}`
-        );
-      }
+      // if (dto.type === UserTypes.ADMIN) {
+      //   sendEmail(
+      //     dto.email,
+      //     'Welcome to the admin panel',
+      //     `Your OTP is ${otp}`,
+      //   );
+      // }
 
       return {
         success: true,
         message: 'User created successfully',
-        result: { email: newUser.email}
-      }
-  
-    } catch(err) {
+        result: { email: newUser.email },
+      };
+    } catch (err) {
       throw new Error(err);
     }
   }
 
   async findByUsername(username: string): Promise<Users | undefined> {
-    return this.userDB.findOne({ username }).exec();
+    return this.userDB.findOne({ username });
   }
 
   async findByEmail(email: string): Promise<Users | undefined> {
-    return this.userDB.findOne({ email }).exec();
+    return this.userDB.findOne({ email });
   }
 
   async findById(userId: string): Promise<Users | undefined> {
-    return this.userDB.findById(userId).exec();
+    return this.userDB.findOne(userId);
   }
 
   async deleteUserByEmail(email: string): Promise<void> {
-    await this.userDB.deleteOne({ email }).exec();
+    await this.userDB.deleteOne({ email });
   }
-
-  async updateUserByEmail(email: string, password: string): Promise<Users> {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const updatedUser = await this.userDB.findOneAndUpdate(
 
   // Add other CRUD methods as needed...
 }

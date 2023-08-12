@@ -1,13 +1,15 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Event } from '../../common/interface/event';
+import { Inject, Injectable } from '@nestjs/common';
+import { EventRepository } from 'src/common/repositories/event.respository';
 
 @Injectable()
 export class SearchEventService {
-  constructor(@InjectModel(Event.name) private eventModel: Model<Event>) {}
+  constructor(
+    @Inject(EventRepository) private readonly eventDB: EventRepository,
+  ) {}
 
-  async searchEventsByCity(city: string): Promise<Event[]> {
-    return this.eventModel.find({ 'location.city': city }).exec();
+  async searchEventsByCity(city: string): Promise<any> {
+    return this.eventDB.findMany({
+      city: { $regex: new RegExp(city, 'i') },
+    });
   }
 }

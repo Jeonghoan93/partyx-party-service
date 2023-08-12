@@ -1,72 +1,62 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
-import { Event } from 'src/common/schema/event';
-import { Users } from 'src/common/schema/users';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Types } from 'mongoose';
+import { EventRepository } from 'src/common/repositories/event.respository';
+import { Events } from 'src/common/schema/events';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 
 @Injectable()
 export class EventService {
   constructor(
-    @InjectModel(Event.name) private readonly eventModel: Model<Event>,
-    @InjectModel(Users.name) private readonly userModel: Model<Users>,
+    @Inject(EventRepository) private readonly eventDB: EventRepository,
   ) {}
 
-  async findAll(): Promise<Event[]> {
-    return await this.eventModel.find().exec();
-    //  return await this.eventModel.find().populate('host').exec();
+  async findAll(): Promise<Events[]> {
+    return await this.eventDB.findAll();
+    //  return await this.eventDB.find().populate('host')
   }
 
-  async findEventById(id: string): Promise<Event> {
+  async findEventById(id: string): Promise<Events> {
     if (!Types.ObjectId.isValid(id)) {
-      throw new NotFoundException(`Event with id ${id} not found`);
+      throw new NotFoundException(`Events with id ${id} not found`);
     }
 
-    const event = await this.eventModel.findById(id);
+    const event = await this.eventDB.findOne(id);
 
     if (!event) {
-      throw new NotFoundException(`Event with id ${id} not found`);
+      throw new NotFoundException(`Events with id ${id} not found`);
     }
 
     return event;
   }
 
-  async create(dto: CreateEventDto): Promise<Event> {
-    const createdEvent = new this.eventModel({
-      ...dto,
-    });
+  async create(dto: CreateEventDto): Promise<Events> {
+    const newEvent = await this.eventDB.create(dto);
 
-    const savedEvent = await createdEvent.save();
-
-    return savedEvent;
-  }
-
-  async update(id: string, updateEventDto: UpdateEventDto): Promise<Event> {
-    const updatedEvent = await this.eventModel.findByIdAndUpdate(
-      id,
-      updateEventDto,
-      { new: true },
+    await this.eventDB.updateOne(
+      { _id: newEvent.host },
+      { $push: { eventsHosted: newEvent._id } },
     );
 
+    return newEvent;
+  }
+
+  async update(id: string, updateEventDto: UpdateEventDto): Promise<any> {
+    const updatedEvent = await this.eventDB.updateOne(id, updateEventDto);
+
     if (!updatedEvent) {
-      throw new NotFoundException(`Event with id ${id} not found`);
+      throw new NotFoundException(`Events with id ${id} not found`);
     }
 
     return updatedEvent;
   }
 
-  async delete(id: string): Promise<Event> {
-    const deletedEvent = await this.eventModel.findByIdAndDelete(id);
+  async deleteOne(id: string): Promise<any> {
+    const deletedEvent = await this.eventDB.deleteOne(id);
 
     if (!deletedEvent) {
-      throw new NotFoundException(`Event with id ${id} not found`);
+      throw new NotFoundException(`Events with id ${id} not found`);
     }
-
-    await this.userModel.updateOne(
-      { _id: deletedEvent.host },
-      { $pull: { eventsHosted: deletedEvent._id } },
-    );
 
     return deletedEvent;
   }

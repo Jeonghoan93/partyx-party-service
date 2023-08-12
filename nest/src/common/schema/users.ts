@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export enum userTypes {
+export enum UserTypes {
   ADMIN = 'admin',
   GUEST = 'guest',
   HOST = 'host',
@@ -125,7 +125,7 @@ export class Users extends Document {
   @Prop({ type: Preferences })
   preferences: Preferences;
 
-  @Prop({ enum: [userTypes.ADMIN, userTypes.GUEST, userTypes.HOST] })
+  @Prop({ enum: [UserTypes.ADMIN, UserTypes.GUEST, UserTypes.HOST] })
   type: string;
 }
 

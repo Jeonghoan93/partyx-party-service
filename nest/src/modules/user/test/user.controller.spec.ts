@@ -58,24 +58,37 @@ describe('UserController', () => {
 
     const result = await controller.create(user);
 
-    expect(result).toBeDefined();
-    expect(result.firstName).toBe('Jimmy');
+    expect(result.success).toBeTruthy();
+    expect(result.message).toBe('User created successfully');
+    expect(result.result.email).toBe(user.email);
   });
 
-  it('find user by email', async () => {
-    // Create a user
-    const user: CreateUserDto = {
+  it('should fetch all users', async () => {
+    const users = await controller.findAll();
+    expect(Array.isArray(users)).toBeTruthy();
+  });
+
+  it('should fetch a user by email', async () => {
+    const email = 'test@email.com';
+
+    // create user first
+    const dto: CreateUserDto = {
       firstName: 'Jimmy',
-      email: 'test@email.com',
+      email: email,
       password: '1234567890',
     };
 
-    const result = await controller.create(user);
+    await controller.create(dto);
 
-    // Find the user by email
-    const foundUser = await controller.findUserByEmail(result.email);
+    const user = await controller.findUserByEmail(email);
 
-    expect(foundUser).toBeDefined();
-    expect(foundUser.firstName).toBe('Jimmy');
+    expect(user).toBeDefined();
+    expect(user.email).toBe(email);
+  });
+
+  it('should delete a user by email and return a success message', async () => {
+    const email = 'test@email.com';
+    const response = await controller.deleteUserByEmail(email);
+    expect(response.message).toBe('User deleted successfully.');
   });
 });

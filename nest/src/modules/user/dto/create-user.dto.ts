@@ -8,7 +8,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { userTypes } from 'src/common/schema/users';
+import { UserTypes } from 'src/common/schema/users';
 
 class AddressDto {
   @IsString()
@@ -127,7 +127,7 @@ export class CreateUserDto {
   @IsOptional()
   preferences?: PreferencesDto;
 
-  @IsEnum(userTypes)
+  @IsEnum(UserTypes)
   @IsOptional()
   type?: string;
 

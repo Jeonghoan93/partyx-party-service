@@ -60,7 +60,7 @@ export class Supply {
 }
 
 @Schema({ timestamps: true })
-export class Event extends Document {
+export class Events extends Document {
   @Prop({ required: true })
   title: string;
 

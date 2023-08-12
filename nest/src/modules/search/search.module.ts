@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { EventSchema } from '../../common/schema/event';
+import { EventRepository } from 'src/common/repositories/event.respository';
+import { EventSchema, Events } from 'src/common/schema/events';
 import { SearchEventService } from './search-event.service';
 import { SearchController } from './search.controller';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Event.name, schema: EventSchema }]),
+    MongooseModule.forFeature([{ name: Events.name, schema: EventSchema }]),
   ],
   controllers: [SearchController],
-  providers: [SearchEventService],
+  providers: [SearchEventService, EventRepository],
 })
 export class SearchModule {}
