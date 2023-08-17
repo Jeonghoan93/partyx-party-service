@@ -1,5 +1,5 @@
 import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { Users } from 'src/common/schema/users';
+import { Users } from 'src/common/schemas/users';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
 

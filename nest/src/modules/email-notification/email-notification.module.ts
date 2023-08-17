@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { EmailNotificationSchema } from '../../common/schemas/email-notification';
 import { EmailNotificationController } from './email-notification.controller';
 import { EmailNotificationService } from './email-notification.service';
-import { EmailNotificationSchema } from '../../common/schema/email-notification';
 
 @Module({
   imports: [

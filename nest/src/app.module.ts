@@ -4,12 +4,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { AppConfig } from 'src/config/app.config';
 import { AuthModule } from './modules/auth/auth.module';
-import { BookingModule } from './modules/booking/booking.module';
 import { EmailNotificationModule } from './modules/email-notification/email-notification.module';
 import { EventModule } from './modules/event/event.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { SearchModule } from './modules/search/search.module';
 import { StripeModule } from './modules/stripe/stripe.module';
+import { TicketModule } from './modules/ticket/ticket.module';
 import { UserModule } from './modules/user/user.module';
 
 @Module({
@@ -32,7 +32,7 @@ import { UserModule } from './modules/user/user.module';
     UserModule,
     PaymentModule,
     EmailNotificationModule,
-    BookingModule,
+    TicketModule,
   ],
 })
 export class AppModule {}

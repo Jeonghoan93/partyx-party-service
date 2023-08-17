@@ -5,13 +5,12 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Request,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
-import { RegisterUserDto } from './dto/register.dto';
 import { JwtAuthGuard } from './strategies/jwt-auth.guard';
 import { LocalAuthGuard } from './strategies/local-auth.guard';
 
@@ -41,14 +40,14 @@ export class AuthController {
   }
 
   @Post('register')
-  async register(@Body() dto: RegisterUserDto) {
+  async register(@Body() dto: any) {
     return this.authService.register(dto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('current-user')
-  async getCurrentUSer(@Request() req) {
-    return this.authService.getCurrentUser(req.user.email);
+  async getCurrentUSer(@Req() req: any) {
+    return this.authService.getCurrentUser(req);
   }
 
   // Add registration, password reset, etc. as needed.

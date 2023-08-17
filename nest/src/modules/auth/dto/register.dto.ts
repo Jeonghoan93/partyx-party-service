@@ -1,5 +1,15 @@
-import { CreateUserDto } from 'src/modules/user/dto/create-user.dto';
+import { IsEmail, IsString, MinLength } from 'class-validator';
 
-export class RegisterUserDto extends CreateUserDto {
-  confirmPassword: string;
+export class LoginUserDto {
+  @IsString()
+  @IsEmail()
+  readonly email: string;
+
+  @IsString()
+  @MinLength(10)
+  readonly password: string;
+
+  @IsString()
+  @MinLength(10)
+  readonly confirmPassword: string;
 }

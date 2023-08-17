@@ -65,13 +65,13 @@ export class Users extends Document {
 
   result: any;
 
-  @Prop({ required: true })
-  password: string;
-
   @Prop({ required: true, unique: true })
   email: string;
 
   @Prop({ required: true })
+  password: string;
+
+  @Prop()
   firstName: string;
 
   @Prop()
@@ -127,6 +127,12 @@ export class Users extends Document {
 
   @Prop({ enum: [UserTypes.ADMIN, UserTypes.GUEST, UserTypes.HOST] })
   type: string;
+
+  createdAt: Date;
+
+  updatedAt: Date;
+
+  emailVerified: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(Users);

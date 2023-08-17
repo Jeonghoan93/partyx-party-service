@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { EventRepository } from 'src/common/repositories/event.respository';
-import { EventSchema, Events } from 'src/common/schema/events';
+import { EventRepository } from 'src/common/repositories/event.repository';
+import { EventSchema, Events } from 'src/common/schemas/events';
 import { SearchEventService } from './search-event.service';
 import { SearchController } from './search.controller';
 

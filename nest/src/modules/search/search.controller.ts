@@ -5,8 +5,8 @@ import { SearchEventService } from './search-event.service';
 export class SearchController {
   constructor(private readonly searchEventService: SearchEventService) {}
 
-  @Get('events')
-  async searchEventsByCity(@Query('city') city: string) {
-    return this.searchEventService.searchEventsByCity(city);
+  @Get()
+  async searchEvents(@Query() filters: any) {
+    return await this.searchEventService.searchEvents(filters);
   }
 }

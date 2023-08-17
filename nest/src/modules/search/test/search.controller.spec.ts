@@ -38,7 +38,7 @@ describe('EventController (e2e)', () => {
           city: 'Stockholm',
           state: 'Stockholm',
           zipCode: '111 52',
-          streetAddress: 'Kungsgatan 18',
+          streetAddress: 'Stockholm 18',
           country: 'Sweden',
         },
         host: {

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { UserRepository } from 'src/common/repositories/user.repository';
-import { UserTypes, Users } from 'src/common/schema/users';
+import { UserTypes, Users } from 'src/common/schemas/users';
 import { generatedHashPassword } from 'src/common/util/password-manager';
 import { CreateUserDto } from './dto/create-user.dto';
 

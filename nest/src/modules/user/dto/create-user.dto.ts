@@ -8,7 +8,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { UserTypes } from 'src/common/schema/users';
+import { UserTypes } from 'src/common/schemas/users';
 
 class AddressDto {
   @IsString()
@@ -75,17 +75,17 @@ class PreferencesDto {
 }
 
 export class CreateUserDto {
-  @IsString()
-  @IsNotEmpty()
-  password: string;
-
   @IsEmail()
   @IsNotEmpty()
   email: string;
 
   @IsString()
   @IsNotEmpty()
-  firstName: string;
+  password: string;
+
+  @IsString()
+  @IsOptional()
+  firstName?: string;
 
   @IsString()
   @IsOptional()
