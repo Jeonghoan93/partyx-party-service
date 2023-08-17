@@ -9,7 +9,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { Events } from 'src/common/schemas/events';
+import { Event } from 'src/common/schemas/events';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { EventService } from './event.service';
@@ -19,18 +19,18 @@ export class EventController {
   constructor(private readonly eventService: EventService) {}
 
   @Get()
-  async findAll(): Promise<Events[]> {
+  async findAll(): Promise<Event[]> {
     return this.eventService.findAll();
   }
 
   @Get(':id')
   @UsePipes(new ValidationPipe({ transform: true }))
-  async findEventById(@Param('id') id: string): Promise<Events> {
+  async findEventById(@Param('id') id: string): Promise<Event> {
     return this.eventService.findEventById(id);
   }
 
   @Post()
-  async create(@Body() dto: CreateEventDto): Promise<Events> {
+  async create(@Body() dto: CreateEventDto): Promise<Event> {
     // This is a common way to get userId from a request if you're using an authentication middleware like passport.
 
     return this.eventService.create(dto);
@@ -41,7 +41,7 @@ export class EventController {
   async update(
     @Param('id') id: string,
     @Body() updateEventDto: UpdateEventDto,
-  ): Promise<Events> {
+  ): Promise<Event> {
     return this.eventService.update(id, updateEventDto);
   }
 
@@ -50,7 +50,7 @@ export class EventController {
   async delete(
     @Param('id')
     id: string,
-  ): Promise<Events> {
+  ): Promise<Event> {
     return this.eventService.deleteOne(id);
   }
 }

@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Events } from 'src/common/schemas/events';
+import { Event } from 'src/common/schemas/events';
 
 @Injectable()
 export class EventRepository {
   constructor(
-    @InjectModel(Events.name) private readonly eventModel: Model<Events>,
+    @InjectModel(Event.name) private readonly eventModel: Model<Event>,
   ) {}
 
   async findOne(query: any) {

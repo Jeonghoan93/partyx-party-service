@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Event } from './events';
 
 @Schema({ timestamps: { createdAt: 'createdAt' } })
 export class Reservation extends Document {
@@ -21,6 +22,8 @@ export class Reservation extends Document {
   createdAt: Date;
 
   updatedAt: Date;
+
+  event: Event;
 }
 
 export const ReservationSchema = SchemaFactory.createForClass(Reservation);

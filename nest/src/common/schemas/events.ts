@@ -60,7 +60,7 @@ export class Supply {
 }
 
 @Schema({ timestamps: true })
-export class Events extends Document {
+export class Event extends Document {
   @Prop({ required: true })
   title: string;
 
@@ -108,6 +108,8 @@ export class Events extends Document {
 
   @Prop({ type: Object })
   supplies: Supply[];
+
+  createdAt: Date;
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);

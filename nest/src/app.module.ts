@@ -7,6 +7,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { EmailNotificationModule } from './modules/email-notification/email-notification.module';
 import { EventModule } from './modules/event/event.module';
 import { PaymentModule } from './modules/payment/payment.module';
+import { ReservationModule } from './modules/reservation/reservation.module';
 import { SearchModule } from './modules/search/search.module';
 import { StripeModule } from './modules/stripe/stripe.module';
 import { TicketModule } from './modules/ticket/ticket.module';
@@ -33,6 +34,7 @@ import { UserModule } from './modules/user/user.module';
     PaymentModule,
     EmailNotificationModule,
     TicketModule,
+    ReservationModule,
   ],
 })
 export class AppModule {}

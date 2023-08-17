@@ -3,14 +3,21 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Reservation } from 'src/common/schemas/reservation';
 
+interface IParams {
+  listingId?: string;
+  userId?: string;
+  hostId?: string;
+}
+
 @Injectable()
 export class ReservationRepository {
   constructor(
     @InjectModel(Reservation.name) private reservationModel: Model<Reservation>,
   ) {}
 
-  async find(params): Promise<Reservation[]> {
+  async find(params: IParams): Promise<Reservation[]> {
     const { listingId, userId, hostId } = params;
+
     const query: any = {};
 
     if (listingId) {

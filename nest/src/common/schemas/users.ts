@@ -105,10 +105,10 @@ export class Users extends Document {
   paymentDetails: PaymentDetails;
 
   @Prop({ type: [String] })
-  eventsHosted: string[];
+  eventHosted: string[];
 
   @Prop({ type: [String] })
-  eventsAttended: string[];
+  eventAttended: string[];
 
   @Prop({ type: [Number] })
   ratingsReceived: number[];

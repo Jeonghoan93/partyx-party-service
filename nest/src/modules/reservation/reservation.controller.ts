@@ -33,5 +33,10 @@ export class ReservationController {
     return await this.reservationService.cancelReservation(id);
   }
 
+  @Get('get-reservations')
+  async getReservations(@Body() params): Promise<any[]> {
+    return await this.reservationService.getReservations(params);
+  }
+
   // ... Endpoints for other operations as necessary
 }

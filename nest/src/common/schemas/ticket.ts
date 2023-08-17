@@ -12,7 +12,7 @@ export class Ticket extends Document {
   @Prop({ required: true, ref: 'Users' })
   userId: string;
 
-  @Prop({ required: true, ref: 'Events' })
+  @Prop({ required: true, ref: 'Event' })
   eventId: string;
 
   @Prop({ required: true })
