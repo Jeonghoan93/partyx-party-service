@@ -1,7 +1,7 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { EventRepository } from 'src/common/repositories/event.repository';
-import { Event } from 'src/common/schemas/events';
+import { Event } from 'src/common/schemas/event';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 

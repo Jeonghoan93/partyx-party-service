@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Event } from './event';
+import { Reservation } from './reservation';
 
 export enum UserTypes {
   ADMIN = 'admin',
@@ -133,6 +135,10 @@ export class Users extends Document {
   updatedAt: Date;
 
   emailVerified: boolean;
+
+  reservations?: Reservation[];
+
+  events?: Event[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(Users);

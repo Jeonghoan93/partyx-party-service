@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { Event } from './events';
+import { Event } from './event';
 
 @Schema({ timestamps: { createdAt: 'createdAt' } })
 export class Reservation extends Document {
