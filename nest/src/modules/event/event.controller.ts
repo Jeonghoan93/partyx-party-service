@@ -31,8 +31,8 @@ export class EventController {
   }
 
   @Get('favorites')
-  async getFavoriteEvents() {
-    return this.eventService.getFavoriteEvents();
+  async getFavoriteEvents(req: any): Promise<Event[] | null> {
+    return this.eventService.getFavoriteEvents(req);
   }
 
   @Post()

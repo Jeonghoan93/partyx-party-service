@@ -84,7 +84,7 @@ export class AuthService {
     return this.userService.create(dto);
   }
 
-  async getCurrentUser(req: any) {
+  async getCurrentUser(req: any): Promise<Partial<Users> | null> {
     try {
       const session = req.session;
       if (!session?.user?.email) {
@@ -101,8 +101,8 @@ export class AuthService {
 
       return {
         ...currentUser,
-        createdAt: currentUser.createdAt.toISOString(),
-        updatedAt: currentUser.updatedAt.toISOString(),
+        createdAt: currentUser.createdAt,
+        updatedAt: currentUser.updatedAt,
         emailVerified: currentUser.emailVerified,
       };
     } catch (err) {

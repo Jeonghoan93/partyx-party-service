@@ -139,6 +139,8 @@ export class Users extends Document {
   reservations?: Reservation[];
 
   events?: Event[];
+
+  favoriteEvents?: Event[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(Users);

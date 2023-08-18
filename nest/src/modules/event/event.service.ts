@@ -2,13 +2,16 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { EventRepository } from 'src/common/repositories/event.repository';
 import { Event } from 'src/common/schemas/event';
+import { AuthService } from '../auth/auth.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 
 @Injectable()
 export class EventService {
   constructor(
-    @Inject(EventRepository) private readonly eventDB: EventRepository,
+    @Inject(EventRepository)
+    private readonly eventDB: EventRepository,
+    private readonly authService: AuthService,
   ) {}
 
   async getEvents(params: any): Promise<Event[]> {
@@ -38,8 +41,8 @@ export class EventService {
     return event;
   }
 
-  async getFavoriteEvents(): Promise<Event[]> {
-    const currentUser = await getCurrentUser();
+  async getFavoriteEvents(req: any): Promise<Event[]> {
+    const currentUser = await this.authService.getCurrentUser(req);
 
     if (!currentUser) {
       return [];
