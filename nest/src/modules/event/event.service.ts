@@ -11,9 +11,17 @@ export class EventService {
     @Inject(EventRepository) private readonly eventDB: EventRepository,
   ) {}
 
-  async findAll(): Promise<Event[]> {
-    return await this.eventDB.findAll();
-    //  return await this.eventDB.find().populate('host')
+  async getEvents(params: any): Promise<Event[]> {
+    const query: any = {
+      ...params,
+    };
+
+    const events = await this.eventDB
+      .findMany(query)
+      .sort({ createdAt: -1 })
+      .exec();
+
+    return events;
   }
 
   async findEventById(id: string): Promise<Event> {
@@ -28,6 +36,20 @@ export class EventService {
     }
 
     return event;
+  }
+
+  async getFavoriteEvents(): Promise<Event[]> {
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser) {
+      return [];
+    }
+
+    const favoriteEvents = await this.eventDB.findMany({
+      id: { $in: currentUser.favoriteEvents },
+    });
+
+    return favoriteEvents;
   }
 
   async create(dto: CreateEventDto): Promise<Event> {

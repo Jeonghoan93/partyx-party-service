@@ -9,19 +9,19 @@ export class AccountRepository {
     @InjectModel(Account.name) private readonly accountModel: Model<Account>,
   ) {}
 
-  async findOne(query: any) {
-    return await this.accountModel.findOne(query);
+  findOne(query: any) {
+    return this.accountModel.findOne(query);
   }
 
-  async create(data: Record<string, any>) {
-    return await this.accountModel.create(data);
+  create(data: Record<string, any>) {
+    return this.accountModel.create(data);
   }
 
-  async find() {
-    return await this.accountModel.find();
+  find() {
+    return this.accountModel.find();
   }
 
-  async deleteOne(query: any) {
-    return await this.accountModel.deleteOne(query);
+  deleteOne(query: any) {
+    return this.accountModel.deleteOne(query);
   }
 }

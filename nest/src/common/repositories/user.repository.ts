@@ -9,19 +9,19 @@ export class UserRepository {
     @InjectModel(Users.name) private readonly userModel: Model<Users>,
   ) {}
 
-  async findOne(query: any) {
-    return await this.userModel.findOne(query);
+  findOne(query: any) {
+    return this.userModel.findOne(query);
   }
 
-  async create(data: Record<string, any>) {
-    return await this.userModel.create(data);
+  create(data: Record<string, any>) {
+    return this.userModel.create(data);
   }
 
-  async find() {
-    return await this.userModel.find();
+  find() {
+    return this.userModel.find();
   }
 
-  async deleteOne(query: any) {
-    return await this.userModel.deleteOne(query);
+  deleteOne(query: any) {
+    return this.userModel.deleteOne(query);
   }
 }

@@ -9,27 +9,27 @@ export class EventRepository {
     @InjectModel(Event.name) private readonly eventModel: Model<Event>,
   ) {}
 
-  async findOne(query: any) {
-    return await this.eventModel.findOne(query);
+  findOne(query: any) {
+    return this.eventModel.findOne(query);
   }
 
-  async findMany(query: any) {
-    return await this.eventModel.find(query);
+  findMany(query: any) {
+    return this.eventModel.find(query);
   }
 
-  async updateOne(query: any, data: any) {
-    return await this.eventModel.updateOne(query, data);
+  updateOne(query: any, data: any) {
+    return this.eventModel.updateOne(query, data);
   }
 
-  async create(data: Record<string, any>) {
-    return await this.eventModel.create(data);
+  create(data: Record<string, any>) {
+    return this.eventModel.create(data);
   }
 
-  async findAll() {
-    return await this.eventModel.find();
+  findAll() {
+    return this.eventModel.find();
   }
 
-  async deleteOne(query: any) {
-    return await this.eventModel.deleteOne(query);
+  deleteOne(query: any) {
+    return this.eventModel.deleteOne(query);
   }
 }

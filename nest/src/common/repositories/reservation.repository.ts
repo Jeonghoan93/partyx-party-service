@@ -15,7 +15,7 @@ export class ReservationRepository {
     @InjectModel(Reservation.name) private reservationModel: Model<Reservation>,
   ) {}
 
-  async find(params: IParams): Promise<Reservation[]> {
+  find(params: IParams): Promise<Reservation[]> {
     const { listingId, userId, hostId } = params;
 
     const query: any = {};
@@ -35,28 +35,28 @@ export class ReservationRepository {
     return this.reservationModel.find(query).sort({ createdAt: -1 }).exec();
   }
 
-  async create(reservation: Partial<Reservation>): Promise<Reservation> {
+  create(reservation: Partial<Reservation>): Promise<Reservation> {
     const newReservation = new this.reservationModel(reservation);
-    return await newReservation.save();
+    return newReservation.save();
   }
 
-  async findById(id: string): Promise<Reservation | null> {
-    return await this.reservationModel.findById(id).exec();
+  findById(id: string): Promise<Reservation | null> {
+    return this.reservationModel.findById(id).exec();
   }
 
-  async update(
+  update(
     id: string,
     reservation: Partial<Reservation>,
   ): Promise<Reservation | null> {
-    return await this.reservationModel
+    return this.reservationModel
       .findByIdAndUpdate(id, reservation, {
         new: true,
       })
       .exec();
   }
 
-  async delete(id: string): Promise<Reservation | null> {
-    return await this.reservationModel.findByIdAndDelete(id).exec();
+  delete(id: string): Promise<Reservation | null> {
+    return this.reservationModel.findByIdAndDelete(id).exec();
   }
 
   // ... Any other database operations specific to reservations
