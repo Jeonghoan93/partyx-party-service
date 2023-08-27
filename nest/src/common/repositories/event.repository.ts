@@ -18,7 +18,9 @@ export class EventRepository {
   }
 
   updateOne(query: any, data: any) {
-    return this.eventModel.updateOne(query, data);
+    const updatedOne = this.eventModel.updateOne(query, data);
+
+    return updatedOne;
   }
 
   create(data: Record<string, any>) {

@@ -6,6 +6,7 @@ import { Event, EventSchema } from 'src/common/schemas/event';
 import { UserSchema, Users } from 'src/common/schemas/users';
 import { AuthModule } from '../auth/auth.module';
 import { EventController } from './event.controller';
+import { EventGateway } from './event.gateway';
 import { EventService } from './event.service';
 
 @Module({
@@ -17,7 +18,7 @@ import { EventService } from './event.service';
     AuthModule,
   ],
   controllers: [EventController],
-  providers: [EventService, EventRepository, UserRepository],
+  providers: [EventService, EventRepository, UserRepository, EventGateway],
   exports: [EventService],
 })
 export class EventModule {}

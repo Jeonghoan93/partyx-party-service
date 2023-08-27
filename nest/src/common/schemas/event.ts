@@ -3,6 +3,11 @@ import { Document } from 'mongoose';
 import { Reservation } from './reservation';
 import { Users } from './users';
 
+export type Position = {
+  lat: number;
+  lng: number;
+};
+
 export class Location {
   @Prop({ type: String, default: 'Point', required: true })
   type: string;
@@ -66,11 +71,20 @@ export class Event extends Document {
   @Prop({ required: true })
   title: string;
 
-  @Prop({ required: true })
+  @Prop()
   description: string;
 
   @Prop()
   imageSrc: string;
+
+  @Prop()
+  position: Position;
+
+  distance?: number;
+
+  freeCancellation?: boolean;
+
+  address?: string;
 
   @Prop({ required: true })
   price: number;

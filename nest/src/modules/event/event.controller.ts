@@ -26,8 +26,8 @@ export class EventController {
 
   @Get(':id')
   @UsePipes(new ValidationPipe({ transform: true }))
-  async findEventById(@Param('id') id: string): Promise<Event> {
-    return this.eventService.findEventById(id);
+  async getEventById(@Param('id') id: string): Promise<Event> {
+    return this.eventService.getEventById(id);
   }
 
   @Get('favorites')
@@ -52,11 +52,10 @@ export class EventController {
   }
 
   @Delete(':id')
-  @UsePipes(new ValidationPipe({ transform: true }))
-  async delete(
+  async deleteOneById(
     @Param('id')
     id: string,
-  ): Promise<Event> {
-    return this.eventService.deleteOne(id);
+  ): Promise<void> {
+    return this.eventService.deleteOneById(id);
   }
 }

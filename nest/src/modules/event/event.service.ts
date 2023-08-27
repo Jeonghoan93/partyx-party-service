@@ -14,6 +14,12 @@ export class EventService {
     private readonly authService: AuthService,
   ) {}
 
+  async getAllEvents(): Promise<Event[]> {
+    const events = await this.eventDB.findAll();
+
+    return events;
+  }
+
   async getEvents(params: any): Promise<Event[]> {
     const query: any = {
       ...params,
@@ -27,7 +33,7 @@ export class EventService {
     return events;
   }
 
-  async findEventById(id: string): Promise<Event> {
+  async getEventById(id: string): Promise<Event> {
     if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException(`Event with id ${id} not found`);
     }
@@ -76,13 +82,11 @@ export class EventService {
     return updatedEvent;
   }
 
-  async deleteOne(id: string): Promise<any> {
-    const deletedEvent = await this.eventDB.deleteOne(id);
+  async deleteOneById(id: string): Promise<void> {
+    const deletedEvent = await this.eventDB.deleteOne({ _id: id }).exec();
 
     if (!deletedEvent) {
       throw new NotFoundException(`Event with id ${id} not found`);
     }
-
-    return deletedEvent;
   }
 }

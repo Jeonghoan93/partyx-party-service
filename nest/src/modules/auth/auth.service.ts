@@ -84,16 +84,13 @@ export class AuthService {
     return this.userService.create(dto);
   }
 
-  async getCurrentUser(req: any): Promise<Partial<Users> | null> {
+  async getCurrentUser(email: string): Promise<Partial<Users> | null> {
     try {
-      const session = req.session;
-      if (!session?.user?.email) {
+      if (!email) {
         return null;
       }
 
-      const currentUser = await this.userService.findByEmail(
-        session.user.email,
-      );
+      const currentUser = await this.userService.findByEmail(email);
 
       if (!currentUser) {
         return null;

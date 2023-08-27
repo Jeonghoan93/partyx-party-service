@@ -47,7 +47,11 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('current-user')
   async getCurrentUSer(@Req() req: any) {
-    return this.authService.getCurrentUser(req);
+    const email = req.session?.user?.email;
+
+    const currentUser = await this.authService.getCurrentUser(email);
+
+    return currentUser;
   }
 
   // Add registration, password reset, etc. as needed.
