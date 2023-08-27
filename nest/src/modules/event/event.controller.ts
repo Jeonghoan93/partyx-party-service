@@ -6,7 +6,6 @@ import {
   Param,
   Post,
   Put,
-  Query,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -19,20 +18,10 @@ import { EventService } from './event.service';
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
-  @Get()
-  async getEvents(@Query() params: any): Promise<Event[]> {
-    return this.eventService.getEvents(params);
-  }
-
   @Get(':id')
   @UsePipes(new ValidationPipe({ transform: true }))
   async getEventById(@Param('id') id: string): Promise<Event> {
     return this.eventService.getEventById(id);
-  }
-
-  @Get('favorites')
-  async getFavoriteEvents(req: any): Promise<Event[] | null> {
-    return this.eventService.getFavoriteEvents(req);
   }
 
   @Post()

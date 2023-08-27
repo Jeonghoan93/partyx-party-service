@@ -20,19 +20,6 @@ export class EventService {
     return events;
   }
 
-  async getEvents(params: any): Promise<Event[]> {
-    const query: any = {
-      ...params,
-    };
-
-    const events = await this.eventDB
-      .findMany(query)
-      .sort({ createdAt: -1 })
-      .exec();
-
-    return events;
-  }
-
   async getEventById(id: string): Promise<Event> {
     if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException(`Event with id ${id} not found`);
@@ -47,33 +34,14 @@ export class EventService {
     return event;
   }
 
-  async getFavoriteEvents(req: any): Promise<Event[]> {
-    const currentUser = await this.authService.getCurrentUser(req);
-
-    if (!currentUser) {
-      return [];
-    }
-
-    const favoriteEvents = await this.eventDB.findMany({
-      id: { $in: currentUser.favoriteEvents },
-    });
-
-    return favoriteEvents;
-  }
-
   async create(dto: CreateEventDto): Promise<Event> {
     const newEvent = await this.eventDB.create(dto);
-
-    await this.eventDB.updateOne(
-      { _id: newEvent.host },
-      { $push: { eventsHosted: newEvent._id } },
-    );
 
     return newEvent;
   }
 
-  async update(id: string, updateEventDto: UpdateEventDto): Promise<any> {
-    const updatedEvent = await this.eventDB.updateOne(id, updateEventDto);
+  async update(id: string, dto: UpdateEventDto): Promise<any> {
+    const updatedEvent = await this.eventDB.updateById(id, dto);
 
     if (!updatedEvent) {
       throw new NotFoundException(`Event with id ${id} not found`);
@@ -82,11 +50,11 @@ export class EventService {
     return updatedEvent;
   }
 
-  async deleteOneById(id: string): Promise<void> {
-    const deletedEvent = await this.eventDB.deleteOne({ _id: id }).exec();
+  async deleteOneById(eventId: string): Promise<void> {
+    const deletedEvent = await this.eventDB.deleteById(eventId);
 
     if (!deletedEvent) {
-      throw new NotFoundException(`Event with id ${id} not found`);
+      throw new NotFoundException(`Event with eventId ${eventId} not found`);
     }
   }
 }

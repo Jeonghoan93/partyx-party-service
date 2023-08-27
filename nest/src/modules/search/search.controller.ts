@@ -6,7 +6,7 @@ export class SearchController {
   constructor(private readonly searchEventService: SearchEventService) {}
 
   @Get()
-  async searchEvents(@Query() filters: any) {
-    return await this.searchEventService.searchEvents(filters);
+  async searchEventsByFilters(@Query() filters: any) {
+    return await this.searchEventService.searchEventsByFilters(filters);
   }
 }

@@ -13,25 +13,29 @@ export class EventRepository {
     return this.eventModel.findOne(query);
   }
 
-  findMany(query: any) {
-    return this.eventModel.find(query);
+  async updateById(eventId: string, eventData: any): Promise<Event> {
+    return this.eventModel
+      .findByIdAndUpdate(eventId, eventData, {
+        new: true,
+      })
+      .exec();
   }
 
-  updateOne(query: any, data: any) {
-    const updatedOne = this.eventModel.updateOne(query, data);
-
-    return updatedOne;
+  async deleteById(eventId: string): Promise<Event> {
+    return this.eventModel.findByIdAndDelete(eventId).exec();
   }
 
-  create(data: Record<string, any>) {
-    return this.eventModel.create(data);
+  async create(eventData: any): Promise<Event> {
+    const newEvent = new this.eventModel(eventData);
+
+    return newEvent.save();
   }
 
-  findAll() {
+  async findAll() {
     return this.eventModel.find();
   }
 
-  deleteOne(query: any) {
-    return this.eventModel.deleteOne(query);
+  async findByFilters(filters: any): Promise<Event[]> {
+    return this.eventModel.find(filters).sort({ createdAt: -1 }).exec();
   }
 }

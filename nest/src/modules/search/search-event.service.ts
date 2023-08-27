@@ -1,32 +1,32 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import axios from 'axios';
 import { EventRepository } from 'src/common/repositories/event.repository';
+import { Event } from 'src/common/schemas/event';
 
 @Injectable()
 export class SearchEventService {
-  constructor(private readonly eventRepo: EventRepository) {}
+  constructor(private readonly eventDB: EventRepository) {}
 
-  async searchEvents(filters: any) {
-    const query = {};
+  async searchEventsByFilters(filters: any): Promise<Event[]> {
+    const result = this.eventDB.findByFilters(filters);
 
-    if (filters.priceMin || filters.priceMax) {
-      query['price'] = {};
-      if (filters.priceMin) query['price']['$gte'] = filters.priceMin;
-      if (filters.priceMax) query['price']['$lte'] = filters.priceMax;
+    return result;
+  }
+
+  async validateCityName(cityName: string): Promise<boolean> {
+    const apiKey = process.env.GOOGLE_PLACES_API_KEY;
+    const apiUrl = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${cityName}&types=(cities)&key=${apiKey}`;
+
+    try {
+      const res = await axios.get(apiUrl);
+
+      if (res.data && res.data.predictions && res.data.predictions.length > 0) {
+        return true;
+      }
+
+      return false;
+    } catch (err) {
+      throw new BadRequestException('Invalid city name');
     }
-
-    if (filters.startDate || filters.endDate) {
-      query['date'] = {};
-      if (filters.startDate)
-        query['date']['$gte'] = new Date(filters.startDate);
-      if (filters.endDate) query['date']['$lte'] = new Date(filters.endDate);
-    }
-
-    // More filters can be added in a similar way
-
-    const events = await this.eventRepo.findMany(query);
-
-    // Sorting & Pagination can be applied on the "events" as needed
-
-    return events;
   }
 }
