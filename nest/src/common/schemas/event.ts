@@ -1,12 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { Reservation } from './reservation';
-import { Users } from './users';
-
-export type Position = {
-  lat: number;
-  lng: number;
-};
+import { User } from './user';
 
 export class Location {
   @Prop({ type: String, default: 'Point', required: true })
@@ -77,8 +72,11 @@ export class Event extends Document {
   @Prop()
   imageSrc: string;
 
-  @Prop()
-  position: Position;
+  @Prop({ type: Object })
+  position: {
+    lat: number;
+    lng: number;
+  };
 
   distance?: number;
 
@@ -133,8 +131,11 @@ export class Event extends Document {
 
   createdAt: Date;
 
-  user?: Users;
+  user?: User;
+
   reservations?: Reservation[];
+
+  eventTheme?: string[];
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);

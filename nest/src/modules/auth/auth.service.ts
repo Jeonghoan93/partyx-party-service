@@ -1,12 +1,11 @@
 import {
   BadRequestException,
-  HttpException,
-  HttpStatus,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { Users } from 'src/common/schemas/users';
+import { User } from 'src/common/schemas/user';
 import { comparePassword } from 'src/common/util/password-manager';
 import { generateAuthToken } from 'src/common/util/token-generator';
 import { UserService } from 'src/modules/user/user.service';
@@ -19,7 +18,7 @@ export class AuthService {
     private userService: UserService,
   ) {}
 
-  async validateUser(dto: LoginUserDto): Promise<Users | null> {
+  async validateUser(dto: LoginUserDto): Promise<User | null> {
     // checking the credentials of the user.
     const user = await this.userService.findByEmail(dto.email);
 
@@ -80,33 +79,34 @@ export class AuthService {
     }
   }
 
-  async register(dto: any): Promise<Users> {
+  async register(dto: any): Promise<User> {
     return this.userService.create(dto);
   }
 
-  async getCurrentUser(email: string): Promise<Partial<Users> | null> {
+  async getCurrentUser(session): Promise<User | null> {
     try {
+      const email = session?.user?.email;
+
       if (!email) {
         return null;
       }
 
-      const currentUser = await this.userService.findByEmail(email);
+      const user = await this.userService.findByEmail(email);
 
-      if (!currentUser) {
+      if (!user) {
         return null;
       }
 
-      return {
-        ...currentUser,
-        createdAt: currentUser.createdAt,
-        updatedAt: currentUser.updatedAt,
-        emailVerified: currentUser.emailVerified,
+      // Map user object
+      const userObj = {
+        ...user.toObject(),
+        createdAt: user.createdAt.toISOString(),
+        updatedAt: user.updatedAt.toISOString(),
       };
+
+      return userObj;
     } catch (err) {
-      throw new HttpException(
-        'Internal server error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new UnauthorizedException("Can't get user");
     }
   }
 }

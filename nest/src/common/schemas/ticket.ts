@@ -9,7 +9,7 @@ export enum TicketStatus {
 
 @Schema({ timestamps: true })
 export class Ticket extends Document {
-  @Prop({ required: true, ref: 'Users' })
+  @Prop({ required: true, ref: 'User' })
   userId: string;
 
   @Prop({ required: true, ref: 'Event' })

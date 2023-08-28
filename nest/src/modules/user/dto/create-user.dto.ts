@@ -8,7 +8,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { UserTypes } from 'src/common/schemas/users';
+import { UserTypes } from 'src/common/schemas/user';
 
 class AddressDto {
   @IsString()

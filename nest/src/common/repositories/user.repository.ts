@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Users } from 'src/common/schemas/users';
+import { User } from 'src/common/schemas/user';
 
 @Injectable()
 export class UserRepository {
   constructor(
-    @InjectModel(Users.name) private readonly userModel: Model<Users>,
+    @InjectModel(User.name) private readonly userModel: Model<User>,
   ) {}
 
-  findOne(query: any) {
-    return this.userModel.findOne(query);
+  async findOne(query: any): Promise<User | null> {
+    return this.userModel.findOne({ query }).exec();
   }
 
   create(data: Record<string, any>) {

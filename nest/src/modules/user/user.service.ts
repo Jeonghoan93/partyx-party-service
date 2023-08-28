@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { UserRepository } from 'src/common/repositories/user.repository';
-import { UserTypes, Users } from 'src/common/schemas/users';
+import { User, UserTypes } from 'src/common/schemas/user';
 import { generatedHashPassword } from 'src/common/util/password-manager';
 import { CreateUserDto } from './dto/create-user.dto';
 
@@ -10,7 +10,7 @@ export class UserService {
     @Inject(UserRepository) private readonly userDB: UserRepository,
   ) {}
 
-  async findAll(): Promise<Users[]> {
+  async findAll(): Promise<User[]> {
     return await this.userDB.find();
   }
 
@@ -63,15 +63,21 @@ export class UserService {
     }
   }
 
-  async findByUsername(username: string): Promise<Users | undefined> {
+  async findByUsername(username: string): Promise<User | undefined> {
     return this.userDB.findOne({ username });
   }
 
-  async findByEmail(email: string): Promise<Users | undefined> {
-    return this.userDB.findOne({ email });
+  async findByEmail(email: string): Promise<User | null> {
+    const user = this.userDB.findOne({ email });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return user;
   }
 
-  async findById(userId: string): Promise<Users | undefined> {
+  async findById(userId: string): Promise<User | undefined> {
     return this.userDB.findOne(userId);
   }
 

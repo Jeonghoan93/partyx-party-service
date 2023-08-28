@@ -2,7 +2,6 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { EventRepository } from 'src/common/repositories/event.repository';
 import { Event } from 'src/common/schemas/event';
-import { AuthService } from '../auth/auth.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 
@@ -11,8 +10,11 @@ export class EventService {
   constructor(
     @Inject(EventRepository)
     private readonly eventDB: EventRepository,
-    private readonly authService: AuthService,
   ) {}
+
+  async getEventsByEventTypes(eventTypes: string[]): Promise<Event[]> {
+    return this.eventDB.findMany({ type: { $in: eventTypes } });
+  }
 
   async getAllEvents(): Promise<Event[]> {
     const events = await this.eventDB.findAll();
@@ -20,15 +22,17 @@ export class EventService {
     return events;
   }
 
-  async getEventById(id: string): Promise<Event> {
-    if (!Types.ObjectId.isValid(id)) {
-      throw new NotFoundException(`Event with id ${id} not found`);
+  async getEventById(eventId: string): Promise<Event> {
+    if (!Types.ObjectId.isValid(eventId)) {
+      throw new NotFoundException(`Event with eventId ${eventId} not found`);
     }
 
-    const event = await this.eventDB.findOne(id);
+    const event = await this.eventDB.findOne({
+      _id: new Types.ObjectId(eventId),
+    });
 
     if (!event) {
-      throw new NotFoundException(`Event with id ${id} not found`);
+      throw new NotFoundException(`Event with id ${eventId} not found`);
     }
 
     return event;
@@ -40,18 +44,25 @@ export class EventService {
     return newEvent;
   }
 
-  async update(id: string, dto: UpdateEventDto): Promise<any> {
-    const updatedEvent = await this.eventDB.updateById(id, dto);
+  async update(eventId: string, dto: UpdateEventDto): Promise<Event> {
+    const updatedEvent = await this.eventDB.update(
+      {
+        _id: new Types.ObjectId(eventId),
+      },
+      dto,
+    );
 
     if (!updatedEvent) {
-      throw new NotFoundException(`Event with id ${id} not found`);
+      throw new NotFoundException(`Event with eventId ${eventId} not found`);
     }
 
     return updatedEvent;
   }
 
   async deleteOneById(eventId: string): Promise<void> {
-    const deletedEvent = await this.eventDB.deleteById(eventId);
+    const deletedEvent = await this.eventDB.delete({
+      _id: new Types.ObjectId(eventId),
+    });
 
     if (!deletedEvent) {
       throw new NotFoundException(`Event with eventId ${eventId} not found`);

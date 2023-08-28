@@ -60,7 +60,7 @@ export class Preferences {
 }
 
 @Schema({ timestamps: true })
-export class Users extends Document {
+export class User extends Document {
   success: boolean;
 
   message: string;
@@ -72,6 +72,9 @@ export class Users extends Document {
 
   @Prop({ required: true })
   password: string;
+
+  @Prop()
+  hashedPassword: string;
 
   @Prop()
   firstName: string;
@@ -118,9 +121,6 @@ export class Users extends Document {
   @Prop({ type: [String] })
   reviewsReceived: string[];
 
-  @Prop({ default: Date.now })
-  joinedDate: Date;
-
   @Prop({ default: true })
   isActive: boolean;
 
@@ -130,8 +130,10 @@ export class Users extends Document {
   @Prop({ enum: [UserTypes.ADMIN, UserTypes.GUEST, UserTypes.HOST] })
   type: string;
 
+  @Prop({ default: Date.now })
   createdAt: Date;
 
+  @Prop({ default: Date.now })
   updatedAt: Date;
 
   emailVerified: boolean;
@@ -143,4 +145,4 @@ export class Users extends Document {
   favoriteEvents?: Event[];
 }
 
-export const UserSchema = SchemaFactory.createForClass(Users);
+export const UserSchema = SchemaFactory.createForClass(User);

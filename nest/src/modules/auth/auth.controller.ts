@@ -7,9 +7,10 @@ import {
   Post,
   Req,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './strategies/jwt-auth.guard';
 import { LocalAuthGuard } from './strategies/local-auth.guard';
@@ -54,5 +55,14 @@ export class AuthController {
     return currentUser;
   }
 
-  // Add registration, password reset, etc. as needed.
+  @Get('current-user')
+  async getCurrentUser(@Req() req: Request) {
+    const user = await this.authService.getCurrentUser(req.session);
+
+    if (!user) {
+      throw new UnauthorizedException('No current user found');
+    }
+
+    return user;
+  }
 }

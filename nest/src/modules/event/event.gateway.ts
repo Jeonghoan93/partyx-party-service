@@ -15,7 +15,7 @@ export class EventGateway
   server: Server;
 
   afterInit(server: Server) {
-    console.log('WebSocket Initialized!');
+    console.log(`Initialized: ${server}`);
   }
 
   handleConnection(client: Socket) {

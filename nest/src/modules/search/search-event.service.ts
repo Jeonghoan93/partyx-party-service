@@ -1,32 +1,18 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import axios from 'axios';
-import { EventRepository } from 'src/common/repositories/event.repository';
+import { Injectable } from '@nestjs/common';
 import { Event } from 'src/common/schemas/event';
+import { EventService } from '../event/event.service';
 
 @Injectable()
 export class SearchEventService {
-  constructor(private readonly eventDB: EventRepository) {}
+  constructor(private readonly service: EventService) {}
 
-  async searchEventsByFilters(filters: any): Promise<Event[]> {
-    const result = this.eventDB.findByFilters(filters);
+  async countByEventTypes(
+    eventTypes: string[],
+  ): Promise<{ events: Event[]; count: number }[]> {
+    const events = await this.service.getEventsByEventTypes(eventTypes);
 
-    return result;
-  }
+    const count = events.length;
 
-  async validateCityName(cityName: string): Promise<boolean> {
-    const apiKey = process.env.GOOGLE_PLACES_API_KEY;
-    const apiUrl = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${cityName}&types=(cities)&key=${apiKey}`;
-
-    try {
-      const res = await axios.get(apiUrl);
-
-      if (res.data && res.data.predictions && res.data.predictions.length > 0) {
-        return true;
-      }
-
-      return false;
-    } catch (err) {
-      throw new BadRequestException('Invalid city name');
-    }
+    return [{ events: events, count: count }];
   }
 }
